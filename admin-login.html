@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masuk — Panel Admin Ma'had UQ</title>
+<meta name="robots" content="noindex, nofollow">
+<script>
+(function() {
+  var t = null;
+  try { t = localStorage.getItem('uq_admin_theme'); } catch (e) {}
+  if (t !== 'light' && t !== 'dark') t = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --font-main:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --bg:#f6f7f9;--surface:#fff;--surface-2:#f4f5f7;
+  --border:#e8e9ed;--border-strong:#d7d9df;
+  --text:#111827;--text-2:#4b5563;--muted:#8a919e;
+  --accent:#0f766e;--accent-hover:#0c625b;--accent-soft:#e8f3f1;--on-accent:#fff;
+  --danger:#dc2626;--danger-soft:#fdeeee;
+  --ring:0 0 0 3px rgba(15,118,110,.14);
+  --brand-bg:#0f3d39;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#0c0e13;--surface:#14171e;--surface-2:#1a1e26;
+  --border:#242934;--border-strong:#313744;
+  --text:#e9ebf0;--text-2:#a6adba;--muted:#6e7686;
+  --accent:#2fb3a1;--accent-hover:#45c6b4;--accent-soft:rgba(47,179,161,.13);--on-accent:#04201c;
+  --danger:#f27070;--danger-soft:rgba(242,112,112,.13);
+  --ring:0 0 0 3px rgba(47,179,161,.22);
+  --brand-bg:#0b2a27;
+  color-scheme:dark;
+}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--font-main);background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* PANEL MEREK (kiri) */
+.brand{position:relative;overflow:hidden;background:var(--brand-bg);color:#fff;padding:2.5rem 3rem;display:flex;flex-direction:column;justify-content:space-between}
+.brand::before{content:'';position:absolute;inset:0;opacity:.5;
+  background:
+    radial-gradient(circle at 85% 15%,rgba(47,179,161,.45),transparent 45%),
+    radial-gradient(circle at 10% 95%,rgba(47,179,161,.25),transparent 40%)}
+.brand::after{content:'';position:absolute;inset:0;opacity:.07;
+  background-image:linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(circle at 70% 30%,#000,transparent 70%);mask-image:radial-gradient(circle at 70% 30%,#000,transparent 70%)}
+.brand>*{position:relative;z-index:1}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-ic{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
+.logo-name{font-weight:700;font-size:.92rem;line-height:1.2}
+.logo-sub{font-size:.75rem;color:rgba(255,255,255,.6)}
+.brand-copy{max-width:420px}
+.brand-copy h2{font-size:clamp(1.6rem,2.6vw,2.2rem);line-height:1.2;font-weight:700;letter-spacing:-.02em;margin-bottom:.9rem}
+.brand-copy p{font-size:.92rem;color:rgba(255,255,255,.7);line-height:1.65}
+.brand-foot{font-size:.75rem;color:rgba(255,255,255,.5)}
+
+/* FORM (kanan) */
+.side{display:flex;flex-direction:column;padding:1.5rem 2rem}
+.side-top{display:flex;justify-content:flex-end}
+.form-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem 0}
+.card{width:100%;max-width:380px}
+.m-logo{display:none;margin-bottom:2rem}
+.m-logo .logo-ic{background:var(--accent);border:none;color:var(--on-accent)}
+.m-logo .logo-name{color:var(--text)}
+.m-logo .logo-sub{color:var(--muted)}
+h1{font-size:1.6rem;font-weight:700;letter-spacing:-.02em;line-height:1.25}
+.lead{color:var(--text-2);font-size:.9rem;margin:.4rem 0 2rem}
+.field{margin-bottom:1.1rem}
+.field label{display:block;font-size:.82rem;font-weight:500;margin-bottom:.45rem}
+.input{position:relative}
+.input>i{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;pointer-events:none}
+.input input{width:100%;height:44px;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;padding:0 .9rem 0 2.5rem;font-size:.9rem;outline:none;transition:border-color .15s,box-shadow .15s}
+.input input::placeholder{color:var(--muted)}
+.input input:hover{border-color:var(--muted)}
+.input input:focus{border-color:var(--accent);box-shadow:var(--ring)}
+.input input.has-btn{padding-right:2.8rem}
+.eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:none;background:transparent;color:var(--muted);border-radius:8px;cursor:pointer;transition:color .15s,background .15s}
+.eye:hover{color:var(--text);background:var(--surface-2)}
+.alert{display:none;align-items:flex-start;gap:9px;padding:.75rem .9rem;border-radius:10px;background:var(--danger-soft);color:var(--danger);font-size:.83rem;font-weight:500;margin-bottom:1.1rem}
+.alert.show{display:flex;animation:shake .35s ease}
+.alert i{margin-top:3px}
+@keyframes shake{20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
+.btn{width:100%;height:46px;border:none;border-radius:10px;background:var(--accent);color:var(--on-accent);font-weight:600;font-size:.92rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;margin-top:.4rem}
+.btn:hover{background:var(--accent-hover)}
+.btn:disabled{opacity:.7;cursor:not-allowed}
+.spinner{width:16px;height:16px;border:2px solid color-mix(in srgb,var(--on-accent) 35%,transparent);border-top-color:var(--on-accent);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.note{display:flex;gap:8px;align-items:flex-start;font-size:.78rem;color:var(--muted);margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border)}
+.note i{margin-top:3px}
+.icon-btn{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);color:var(--text-2);cursor:pointer;transition:all .15s}
+.icon-btn:hover{border-color:var(--border-strong);color:var(--text)}
+.theme-dark-ic{display:none}
+[data-theme="dark"] .theme-dark-ic{display:inline-block}
+[data-theme="dark"] .theme-light-ic{display:none}
+.copy{text-align:center;font-size:.75rem;color:var(--muted)}
+
+@media(max-width:900px){
+  body{grid-template-columns:1fr}
+  .brand{display:none}
+  .m-logo{display:flex}
+  .side{padding:1rem 1.25rem}
+}
+@media(prefers-reduced-motion:reduce){.alert.show{animation:none}}
+</style>
+</head>
+<body>
+
+<aside class="brand" aria-hidden="true">
+  <div class="logo">
+    <div class="logo-ic"><i class="fas fa-book-open"></i></div>
+    <div><div class="logo-name">Ma'had Utlul Qur'an</div><div class="logo-sub">Panel Admin</div></div>
+  </div>
+  <div class="brand-copy">
+    <h2>Kelola website pesantren dengan mudah.</h2>
+    <p>Berita, galeri, jadwal pelajaran, prestasi, hingga data pendaftaran santri — semuanya dari satu tempat.</p>
+  </div>
+  <div class="brand-foot">Ma'had Tahfizh Utlul Qur'an · Kota Tangerang</div>
+</aside>
+
+<main class="side">
+  <div class="side-top">
+    <button class="icon-btn" type="button" title="Ganti tema terang / gelap" aria-label="Ganti tema" onclick="toggleTheme()"><i class="fas fa-moon theme-light-ic"></i><i class="fas fa-sun theme-dark-ic"></i></button>
+  </div>
+
+  <div class="form-wrap">
+    <div class="card">
+      <div class="logo m-logo">
+        <div class="logo-ic"><i class="fas fa-book-open"></i></div>
+        <div><div class="logo-name">Ma'had Utlul Qur'an</div><div class="logo-sub">Panel Admin</div></div>
+      </div>
+
+      <h1>Selamat datang kembali</h1>
+      <p class="lead">Masuk dengan akun admin untuk melanjutkan.</p>
+
+      <div class="alert" id="alert" role="alert"><i class="fas fa-circle-exclamation"></i><span id="alertMsg"></span></div>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <div class="input">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" name="email" placeholder="nama@email.com" autocomplete="username" required autofocus>
+          </div>
+        </div>
+        <div class="field">
+          <label for="password">Kata sandi</label>
+          <div class="input">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" name="password" class="has-btn" placeholder="Masukkan kata sandi" autocomplete="current-password" required>
+            <button type="button" class="eye" id="eyeBtn" aria-label="Tampilkan kata sandi" onclick="togglePass()"><i class="fas fa-eye"></i></button>
+          </div>
+        </div>
+        <button type="submit" class="btn" id="btnLogin">Masuk <i class="fas fa-arrow-right"></i></button>
+      </form>
+
+      <div class="note"><i class="fas fa-shield-halved"></i><span>Halaman khusus admin. Setiap percobaan masuk tercatat di log keamanan.</span></div>
+    </div>
+  </div>
+
+  <div class="copy">© <span id="yr"></span> Ma'had Utlul Qur'an</div>
+</main>
+
+<script>
+// ─── URL APPS SCRIPT ─────────────────────────────────────────
+// Harus sama dengan APPS_SCRIPT_URL di admin-dashboard.html dan main.js.
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsVm9VG5463QgOlajXBf1go2S9i0e3KvHlYyXNM8XkAtIp_DNCsrQSIwXnqCquvh8ouA/exec';
+var DASHBOARD_URL = 'admin-dashboard.html';
+var SESSION_KEY = 'uq_admin_session';
+// ─────────────────────────────────────────────────────────────
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// Kalau sesi masih berlaku, langsung ke dashboard
+(function() {
+  var s = null;
+  try { s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (e) {}
+  if (s && s.token && new Date() < new Date(s.expired)) window.location.replace(DASHBOARD_URL);
+})();
+
+function toggleTheme() {
+  var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  try { localStorage.setItem('uq_admin_theme', t); } catch (e) {}
+}
+
+function togglePass() {
+  var inp = document.getElementById('password'), btn = document.getElementById('eyeBtn');
+  var show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.innerHTML = '<i class="fas ' + (show ? 'fa-eye-slash' : 'fa-eye') + '"></i>';
+  btn.setAttribute('aria-label', show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+}
+
+function showError(msg) {
+  var a = document.getElementById('alert');
+  document.getElementById('alertMsg').textContent = msg;
+  a.classList.remove('show'); void a.offsetWidth; a.classList.add('show');
+}
+
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var email = document.getElementById('email').value.trim();
+  var password = document.getElementById('password').value;
+  if (!email || !password) { showError('Isi email dan kata sandi terlebih dahulu.'); return; }
+  document.getElementById('alert').classList.remove('show');
+
+  var btn = document.getElementById('btnLogin'), orig = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Memeriksa...';
+  try {
+    var res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'login', email: email, password: password })
+    });
+    var data = await res.json();
+    if (data.status !== 'success') { showError(data.message || 'Email atau kata sandi salah.'); return; }
+
+    // Sesi yang dibaca dashboard: { token, nama, role, expired }
+    var d = (data.data && typeof data.data === 'object') ? data.data : data;
+    if (!d.token) { showError('Server tidak mengirim token sesi. Hubungi pengembang.'); return; }
+    var session = {
+      token: d.token,
+      nama: d.nama || d.name || email.split('@')[0],
+      role: d.role || 'Admin',
+      email: d.email || email,
+      expired: d.expired || d.expiredAt || new Date(Date.now() + 8 * 3600 * 1000).toISOString()
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    btn.innerHTML = '<i class="fas fa-check"></i> Berhasil';
+    window.location.href = DASHBOARD_URL;
+  } catch (err) {
+    console.error('Login gagal:', err);
+    showError('Gagal terhubung ke server. Periksa koneksi internet Anda.');
+  } finally {
+    if (!document.hidden) { btn.disabled = false; if (btn.textContent.indexOf('Berhasil') < 0) btn.innerHTML = orig; }
+  }
+});
+</script>
+</body>
+</html>
